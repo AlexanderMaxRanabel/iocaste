@@ -28,15 +28,14 @@ async fn main() -> anyhow::Result<()> {
                 archive_gempage::archive_page(current_path.clone(), gem_body.clone()).await?;
             }
 
-            "True" => {}
+            "True" => {
+                unimplemented!()
+            }
 
-            _ => { 
+            _ => {
                 println!("{}: Unknown depth mode", "Error".red());
             }
         }
-
-        //let draw_ui_handler = tokio::spawn(ui::draw_ui(gem_res.clone(), url.clone()));
-        //draw_ui_handler.await??;
     } else {
         println!("{}: Gemini archiver", "Iocaste".magenta());
         std::process::exit(1);

@@ -2,13 +2,14 @@ use std::{fs, io::prelude::*};
 
 use colored::*;
 
-pub async fn archive_page(current_path: String, html_body: String) -> anyhow::Result<()> {
-    let html_path = format!("{}/{}", current_path, "main_output.gmi");
-    let html = fs::File::create(html_path.clone());
+pub async fn archive_page(current_path: String, gem_body: String) -> anyhow::Result<()> {
+    let gemtext_path = format!("{}/{}", current_path, "main_output.gmi");
+    let gemtext = fs::File::create(gemtext_path.clone());
 
-    println!("{}: {}", "LOG".yellow().bold(), html_path.clone());
+    println!("{}: {}", "LOG".yellow().bold(), gemtext_path.clone());
 
-    html.expect("Cannot write to this file")
-        .write_all(html_body.as_bytes())?;
+    gemtext
+        .expect("Cannot write to this file")
+        .write_all(gem_body.as_bytes())?;
     Ok(())
 }
