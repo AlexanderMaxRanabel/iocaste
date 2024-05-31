@@ -1,4 +1,5 @@
 use colored::*;
+use regex::Regex;
 
 pub async fn create_link(domain: String, sublink: String) -> anyhow::Result<String> {
     let url: String;
@@ -28,18 +29,34 @@ pub async fn get_proper_domain(url: String) -> anyhow::Result<String> {
 }
 
 pub async fn get_path(sublink: String) -> anyhow::Result<String> {
-    let start_index = match sublink.find("gemini://") {
-        Some(index) => index + "gemini://".len(),
-        None => 0,
-    };
-    let end_index = match sublink.find(".gmi") {
-        Some(index) => index,
-        None => 0,
-    };
-    let result = &sublink[start_index..end_index];
+    // Suprisingly hardest to implement cuz there is soo many edge cases
+    let result: String;
 
-    Ok(result.to_string())
+    let pattern: String;
+    if  sublink.ends_with(".gmi") {
+        pattern = format!(r"{}(.*){}", regex::escape("gemini://"), regex::escape(".gmi"));
+    } else {
+        pattern = format!(r"{}(.*)", regex::escape("gemini://")); 
+    }
+
+    let re = Regex::new(&pattern).unwrap();
+    
+    // Apply the regex pattern to the original string
+    if let Some(captures) = re.captures(&sublink) {
+        if let Some(matched) = captures.get(1) {
+            result = matched.as_str().to_string();
+        } else {
+            println!("{}: No match found for the capture group.", "Error".red());
+            std::process::exit(1);
+        }
+    } else {
+        println!("{}: Pattern not found in the original string.", "Error".red());
+        std::process::exit(1);
+    }
+
+    Ok(result)
 }
+        
 
 pub async fn extract_links(
     mut anchor_links: Vec<String>,
