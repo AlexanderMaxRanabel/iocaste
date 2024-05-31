@@ -1,4 +1,6 @@
 mod archive_gempage;
+mod depth_gempage;
+mod domain_utils;
 mod fetch_gempage;
 mod gemurl_parse;
 
@@ -29,7 +31,8 @@ async fn main() -> anyhow::Result<()> {
             }
 
             "True" => {
-                unimplemented!()
+                archive_gempage::archive_page(current_path.clone(), gem_body.clone()).await?;
+                depth_gempage::depth_based(gem_body.clone(), current_path.clone(), url.clone()).await?;
             }
 
             _ => {

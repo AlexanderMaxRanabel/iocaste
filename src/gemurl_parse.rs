@@ -1,27 +1,13 @@
+use crate::domain_utils;
 use std::{fs, path::Path};
 
 use chrono::prelude::*;
 use colored::*;
 
 pub async fn parse_and_create_dir(url: String) -> anyhow::Result<String> {
-    let mut parsed_url = String::new();
+    let domain = domain_utils::get_proper_domain(url.clone()).await?;
 
-    if url.starts_with("gemini://") {
-        let parts: Vec<&str> = url.split("gemini://").collect();
-        parsed_url = if parts.len() > 1 {
-            let second_part = parts[1];
-            (second_part.to_string().split('/').next().unwrap_or("")).to_string()
-        } else {
-            println!("{}: Failed to parse", "Error".red());
-            std::process::exit(1);
-        }
-    } else {
-        if let Some(index) = url.find('/') {
-            parsed_url = (&url[..index]).to_string();
-        }
-    }
-
-    let sanitized_domain: String = parsed_url
+    let sanitized_domain: String = domain
         .chars()
         .filter(|&c| c.is_ascii_alphanumeric() || c == '-' || c == '.')
         .collect::<String>();
@@ -31,7 +17,7 @@ pub async fn parse_and_create_dir(url: String) -> anyhow::Result<String> {
         println!(
             "{}: Path {} was previously recorded, Recording into previously generated archive",
             "LOG".yellow().bold(),
-            parsed_url
+            domain
         );
     } else {
         fs::create_dir_all(sanitized_domain.clone())?;
