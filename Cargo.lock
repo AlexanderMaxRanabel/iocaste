@@ -598,9 +598,9 @@ dependencies = [
 
 [[package]]
 name = "trotter"
-version = "0.6.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef8936ac415d21ba8def39e44d196c651547100a2ab369d2c0f75d2b76696612"
+checksum = "83bb9a90ef3789e7e4529e1400fbcff84a36c2e40a83a646692645aa9108cac7"
 dependencies = [
  "openssl",
  "thiserror",

@@ -6,8 +6,9 @@ pub async fn create_link(domain: String, sublink: String) -> anyhow::Result<Stri
     if sublink.starts_with("/") {
         url = format!("{}{}{}", "gemini://", domain, sublink);
     } else {
-        url = format!("{}{}/{}", "gemini://", domain, sublink);
+        url = format!("{}{}{}", "gemini://", domain, sublink);
     }
+    
     Ok(url)
 }
 
@@ -29,7 +30,6 @@ pub async fn get_proper_domain(url: String) -> anyhow::Result<String> {
 }
 
 pub async fn get_path(sublink: String) -> anyhow::Result<String> {
-    // Suprisingly hardest to implement cuz there is soo many edge cases
     let result: String;
 
     let pattern: String;
@@ -79,9 +79,9 @@ pub async fn extract_links(
                     std::process::exit(1);
                 });
 
-                if !link.starts_with("gemini://") {
-                    let domain = get_proper_domain(url.clone()).await?;
-                    link = create_link(domain, url.clone()).await?;
+                if !link.starts_with("gemini://") && link.ends_with(".gmi") {
+                    let domain = get_path(url.clone()).await?;
+                    link = create_link(domain, link).await?;
                 }
 
                 anchor_links.push(link);
