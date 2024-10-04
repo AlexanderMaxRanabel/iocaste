@@ -27,11 +27,11 @@ async fn main() -> anyhow::Result<()> {
 
         match depth_mode.as_str() {
             "False" => {
-                archive_gempage::archive_page(current_path.clone(), gem_body.clone()).await?;
+                archive_gempage::archive_page(current_path.clone(), gem_body.clone(), "main_output.gmi".to_string()).await?;
             }
 
             "True" => {
-                archive_gempage::archive_page(current_path.clone(), gem_body.clone()).await?;
+                archive_gempage::archive_page(current_path.clone(), gem_body.clone(), "main_output.gmi".to_string()).await?;
                 depth_gempage::depth_based(gem_body.clone(), current_path.clone(), url.clone()).await?;
             }
 

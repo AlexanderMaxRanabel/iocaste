@@ -1,9 +1,6 @@
 use crate::domain_utils;
 use crate::fetch_gempage;
-
-use std::{fs, io::Write};
-
-use colored::*;
+use crate::archive_gempage;
 
 pub async fn depth_based(gem_body: String, current_path: String, url: String) -> anyhow::Result<()> {
     let mut anchor_links: Vec<String> = Vec::new();
@@ -23,18 +20,12 @@ pub async fn depth_based(gem_body: String, current_path: String, url: String) ->
         let sublink_path_with_dashes = sublink_path.replace("/", "-");
 
         let sublink_gem_path = format!(
-            "{}/{}-{}.gmi",
-            current_path, sublink_sanitized_domain, sublink_path_with_dashes
+            "{}-{}.gmi",
+            sublink_sanitized_domain, sublink_path_with_dashes
 
         );
 
-        let sublink_gem = fs::File::create(sublink_gem_path.clone());
-
-        println!("{}: Writing: {} to {}", "LOG".yellow().bold(), sublink.clone(), sublink_gem_path.clone());
-
-        sublink_gem
-            .expect("Cannot write to this file")
-            .write_all(sublink_gem_body.as_bytes())?;
+        let _ = archive_gempage::archive_page(current_path.clone(), sublink_gem_body, sublink_gem_path).await?;
     }
     
     Ok(())
